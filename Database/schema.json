@@ -1,0 +1,12 @@
+[
+    {"name": "article_title", "type": "STRING", "mode": "REQUIRED"},
+    {"name": "original_article_length", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "user_desired_length", "type": "INTEGER", "mode": "REQUIRED"},
+    {"name": "summary_length", "type": "INTEGER", "mode": "NULLABLE"},
+    {"name": "audio_file", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "summary_file", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "wikipedia_url", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "GCS_storage_url", "type": "STRING", "mode": "NULLABLE"},
+    {"name": "user_rating", "type": "FLOAT", "mode": "NULLABLE"},
+    {"name": "audio_duration_minutes", "type": "FLOAT", "mode": "NULLABLE"}
+  ]

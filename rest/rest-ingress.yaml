@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wikipedia-ingress
+  annotations:
+    kubernetes.io/ingress.class: gce # Use Google Cloud ingress controller
+    cloud.google.com/app-protocols: '{"rest-api":"HTTP"}'
+    cloud.google.com/backend-config: '{"default": "rest-api-backend-config"}'
+    ingress.kubernetes.io/enable-cors: "true"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /process
+            pathType: Prefix
+            backend:
+              service:
+                name: rest-api
+                port:
+                  number: 5000
+          - path: /submit_rating
+            pathType: Prefix
+            backend:
+              service:
+                name: rest-api
+                port:
+                  number: 5000

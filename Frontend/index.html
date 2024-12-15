@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wikipedia Summarization Service</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Welcome Message -->
+    <div class="welcome-message" id="welcomeMessage">
+        Welcome to Wikipedia Summarization Service
+    </div>
+
+    <!-- Main Content -->
+    <div class="container" id="contentContainer" style="display: none;">
+        <h1 class="main-heading">Wikipedia Summarizer</h1>
+
+        <!-- Input Form -->
+        <form id="wikiForm" class="input-section">
+            <div class="input-group">
+                <label for="articleInput">Wikipedia Article or URL:</label>
+                <input type="text" id="articleInput" placeholder="Enter Wikipedia Article or URL">
+            </div>
+            <div class="input-group">
+                <label for="summaryLength">Length of Summary (in words):</label>
+                <input type="number" id="summaryLength" min="50" placeholder="Enter word count for summary">
+            </div>
+            <button type="button" class="submit-button" onclick="submitRequest()">Submit</button>
+        </form>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-container" style="display: none;">
+            <div class="request-summary" id="requestSummary"></div>
+            <div class="loading-content">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Processing your request, please wait...</span>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div id="response" class="response-section" style="display: none;">
+            <h3>Summary:</h3>
+            <p id="summaryText"></p>
+
+            <h3>Audio Player:</h3>
+            <div class="audio-player">
+                <div class="audio-controls">
+                    <button id="playPauseBtn" class="control-btn">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="timeline-container">
+                        <input type="range" id="seekSlider" class="timeline" value="0" step="1">
+                        <div class="time-display">
+                            <span id="currentTime">0:00</span>
+                            <span>/</span>
+                            <span id="duration">0:00</span>
+                        </div>
+                    </div>
+                    <div class="volume-container">
+                        <button id="muteBtn" class="control-btn">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <input type="range" id="volumeSlider" class="volume" min="0" max="1" step="0.1" value="1">
+                    </div>
+                    <select id="playbackSpeed" class="speed-select">
+                        <option value="0.5">0.5x</option>
+                        <option value="1" selected>1x</option>
+                        <option value="1.5">1.5x</option>
+                        <option value="2">2x</option>
+                    </select>
+                    <a id="downloadLink" href="#" download="audio.mp3" class="download-btn">
+                        <i class="fas fa-download"></i>
+                    </a>
+                </div>
+                <audio id="audioPlayer"></audio>
+            </div>
+
+            <!-- Rating Section -->
+            <div class="rating-section" id="ratingSection">
+                <label for="userRating">Rate the output (0-10):</label>
+                <input type="number" id="userRating" min="0" max="10" placeholder="Enter your rating">
+                <button type="button" class="submit-button" onclick="submitRating()">Submit Rating</button>
+                <button type="button" id="tryAgainButton" class="submit-button" style="display: none;" onclick="tryAgain()">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

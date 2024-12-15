@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-handler-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: storage-handler
+  template:
+    metadata:
+      labels:
+        app: storage-handler
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - storage-handler
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: storage-handler
+        image: gcr.io/dcsc2024-437804/storage-handler-image:latest
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        env:
+        - name: GCS_BUCKET_NAME
+          value: "wikipedia-summarizer-storage"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/app/wikipedia-service-account-key.json" # Path inside the container
+        volumeMounts:
+        - name: service-account-key
+          mountPath: /app/wikipedia-service-account-key.json
+          subPath: wikipedia-service-account-key.json
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 200
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 200
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+      - name: service-account-key
+        secret:
+          secretName: wikipedia-latest-account-key
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-handler-service
+spec:
+  type: ClusterIP
+  selector:
+    app: storage-handler
+  ports:
+    - port: 5000
+      targetPort: 5000
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: storage-handler-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: storage-handler-deployment
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 50

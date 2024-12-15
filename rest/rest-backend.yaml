@@ -1,0 +1,19 @@
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: rest-api-backend-config
+# spec:
+#   timeoutSec: 10000
+#   connectionDraining:
+#     drainingTimeoutSec: 60
+
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: rest-api-backend-config
+spec:
+  timeoutSec: 10000
+  sessionAffinity:
+    affinityType: NONE # No session stickiness
+  connectionDraining:
+    drainingTimeoutSec: 60
